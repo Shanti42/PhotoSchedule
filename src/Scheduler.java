@@ -26,13 +26,12 @@ public class Scheduler {
         // set first element of benefit array to 0
         totalBenefits[0] = 0;
 
-        /**will require specificly an array list **/
+        /**will require specifically an array list **/
 
         // for all nodes starting at the first node in the sorted list
-        for (int i = 0; i < nodeList.size(); i++) {
+        for (int i = 1; i < nodeList.size(); i++) {
             // Total benefit in array corresponding to current node <- max(benefit at previous job node, benefit at predecessor node + benefit of current node)
             /**TO DO**/
-            //totalBenefits[i] = to
         }
 
         // return createSchedule(benefits, sortedNodes)
@@ -42,14 +41,24 @@ public class Scheduler {
 
     // void assignPredecessors(sorted list of nodes) -> returns the predecessor node which does not overlap
     private void assignPredecessors(List<JobNode> nodeList) {
-        /** TO DO **/
-        // Array A <- empty array with n spots where n is the length of list
-        // For each JobNode in list:
-        // st <- start time of this JobNode
-        // for each node in sorted list, going in reverse order, until condition is met:
-        // If end time of checked node < st
-        // assign checked node as predecessor of this JobNode and continue main loop
+        List<JobNode> reverseList = new ArrayList<JobNode>(nodeList);
+        Collections.reverse(reverseList);
 
+        // For each JobNode in list:
+        for (JobNode currentNode : nodeList){
+            // st <- start time of this JobNode
+            int st = currentNode.getStart();
+            // for each node in sorted list, going in reverse order, until condition is met:
+            foundPredecessor:
+            for (JobNode checkNode : reverseList){
+                // If end time of checked node < st
+                if (checkNode.getEnd() < st){
+                    // assign checked node as predecessor of this JobNode and continue main loop
+                    currentNode.setPredecessor(checkNode);
+                    break foundPredecessor;
+                }
+            }
+        }
     }
 
     // schedule <- empty list, will contain the optimal schedule of nodes
