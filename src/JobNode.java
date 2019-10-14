@@ -64,12 +64,25 @@ public class JobNode implements Comparable {
     @Override
     public int compareTo(Object other) {
         Objects.requireNonNull(other, "JobNode, compareTo -> input parameter to compare is null");
-        if(other instanceof JobNode){
-            JobNode otherNode = (JobNode)other;
+        if (other instanceof JobNode) {
+            JobNode otherNode = (JobNode) other;
             return Integer.compare(this.end, otherNode.end);
         } else {
             throw new IllegalArgumentException("JobNode, compareTo -> Object of wrong type given, expected type JobNode");
         }
+    }
 
+    @Override
+    public boolean equals(Object other) {
+        Objects.requireNonNull(other, "JobNode, equals -> input parameter is null");
+        if (getClass() != other.getClass()) {
+            return false;
+        } else {
+            JobNode otherNode = (JobNode) other;
+            Objects.requireNonNull(otherNode.name, "JobNode, equals -> name value is null");
+            return start == otherNode.start &&
+                    end == otherNode.end &&
+                    name.equals(otherNode.name);
+        }
     }
 }

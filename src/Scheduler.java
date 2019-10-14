@@ -12,13 +12,15 @@ public class Scheduler {
     // Output: A schedule of nodes that maximizes the benefit
 
     // findOptimalSchedule( List of JobNodes ) {
-    public List<JobNode> findOptimalSchedule(ArrayList<JobNode> nodeList) {
+    public static List<JobNode> findOptimalSchedule(ArrayList<JobNode> nodeList) {
+
 
         // List sortedNodes <- Sort input list by endTime (early to late) using merge sort
-        List<JobNode> sortedNodes = new ArrayList<>(nodeList);
+        ArrayList<JobNode> sortedNodes = new ArrayList<>(nodeList);
         Collections.sort(sortedNodes);
         // Assign predecessor nodes for each node
         assignPredecessors(sortedNodes);
+
 
         // benefits <- array with length equal to the number of nodes, represents total benefits at each Node
         int[] totalBenefits = new int[sortedNodes.size()];
@@ -41,7 +43,7 @@ public class Scheduler {
     }
 
     // void assignPredecessors(sorted list of nodes) -> returns the predecessor node which does not overlap
-    private void assignPredecessors(List<JobNode> nodeList) {
+    private static void assignPredecessors(List<JobNode> nodeList) {
         /** TO DO **/
         // Array A <- empty array with n spots where n is the length of list
         // For each JobNode in list:
@@ -53,9 +55,44 @@ public class Scheduler {
     }
 
     // schedule <- empty list, will contain the optimal schedule of nodes
-    private List<JobNode> createSchedule(int[] totalBenifits, List<JobNode> sortedNodes) {
-        /** TO DO **/
+    private static List<JobNode> createSchedule(int[] totalBenefits, ArrayList<JobNode> sortedNodes) {
+
+        int size = sortedNodes.size();
+
+        /** get last element*/
+        JobNode currentNode = sortedNodes.get(size - 1);
+
+        List<JobNode> optimalSchedule = new ArrayList<>();
+        int index = size;
+
         // loop backwards over list of total benefits for each node until the first node is reached:
+        while (true){
+            int benefitsAtNode = totalBenefits[index];
+            int predecessorIndex;
+
+            if(currentNode.getPredecessor() == null){
+                predecessorIndex = 0;
+            } else {
+                predecessorIndex = sortedNodes.indexOf(currentNode.getPredecessor());
+            }
+
+            // If the total benefit of the node is equal to the benefit of the node plus the benefit of the predecessor, then that node is included.
+            if(benefitsAtNode == benefitsAtNode + totalBenefits[predecessorIndex]){
+                //Add that node to the schedule.
+                optimalSchedule.add(currentNode);
+                if(predecessorIndex == 0){
+                    return optimalSchedule;
+                } else {
+                    index -= predecessorIndex;
+                }
+
+            }
+            //If the total benefit at a node “A”  is equal to the total benefit at the previous node “B”, then node “A” is not included in the schedule.
+            else {
+                index -= 1;
+            }
+
+        }
         // If the total benefit at a node “A”  is equal to the total benefit at the previous node “B”, then node “A” is not included in the schedule.
         //
         // If the total benefit of the node is equal to the benefit of the node plus the benefit of the predecessor, then that node is included. Add that node to the schedule.
